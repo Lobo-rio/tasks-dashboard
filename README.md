@@ -327,9 +327,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: tasks
-      POSTGRES_USER: tasks_user
-      POSTGRES_PASSWORD: tasks_pass_2024
+      POSTGRES_DB: example_multi_user
+      POSTGRES_USER: example_multi_user
+      POSTGRES_PASSWORD: example_multi_user_2024
 ```
 
 ## 🤝 Contribuindo
