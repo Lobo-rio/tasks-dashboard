@@ -1,4 +1,4 @@
-# Antigravyti Dashboard
+# Tasks Dashboard
 
 Sistema de gerenciamento de tarefas, squads e usuários desenvolvido com React, Electron e NestJS.
 
@@ -7,7 +7,7 @@ Sistema de gerenciamento de tarefas, squads e usuários desenvolvido com React, 
 
 ## 📋 Sobre o Projeto
 
-Antigravyti Dashboard é uma aplicação desktop completa para gerenciamento de projetos, permitindo organizar usuários, squads (equipes) e tarefas de forma eficiente e intuitiva.
+Tasks Dashboard é uma aplicação desktop completa para gerenciamento de projetos, permitindo organizar usuários, squads (equipes) e tarefas de forma eficiente e intuitiva.
 
 ### ✨ Principais Funcionalidades
 
@@ -45,7 +45,7 @@ Antigravyti Dashboard é uma aplicação desktop completa para gerenciamento de 
 ## 📁 Estrutura do Projeto
 
 ```
-antigravyti-dashboard/
+tasks-dashboard/
 ├── electron/              # Configuração do Electron
 │   ├── main.cjs          # Processo principal
 │   └── preload.cjs       # Script de preload (IPC)
@@ -117,7 +117,7 @@ npm run electron
 
 ```bash
 # Clone o repositório do backend
-cd ../antigravyti-backend
+cd ../tasks-backend
 
 # Instale as dependências
 npm install --legacy-peer-deps
@@ -327,9 +327,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: antigravyti
-      POSTGRES_USER: antigravyti_user
-      POSTGRES_PASSWORD: antigravyti_pass_2024
+      POSTGRES_DB: tasks
+      POSTGRES_USER: tasks_user
+      POSTGRES_PASSWORD: tasks_pass_2024
 ```
 
 ## 🤝 Contribuindo

@@ -5,7 +5,7 @@ export default function Layout() {
     return (
         <div className="h-screen flex bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
             <aside className="w-64 p-4 border-r bg-white dark:bg-slate-800 shadow-sm flex flex-col border-slate-200 dark:border-slate-700">
-                <h2 className="text-2xl font-bold mb-8 text-indigo-600 px-2">Antigravyti</h2>
+                <h2 className="text-2xl font-bold mb-8 text-indigo-600 px-2">Tasks</h2>
                 <nav className="flex flex-col gap-2">
                     <Link to="/" className="p-2 px-3 rounded-lg hover:bg-slate-100 font-medium text-slate-700 transition flex items-center gap-2">
                         Dashboard
