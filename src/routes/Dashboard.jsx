@@ -12,14 +12,23 @@ export default function Dashboard() {
         tasksByStatus: [],
         tasksByPriority: []
     });
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const loadStats = async () => {
-            const [users, squads, tasks] = await Promise.all([
-                api.users.list(),
-                api.squads.list(),
-                api.tasks.list()
+    const loadStats = async () => {
+        try {
+            setLoading(true);
+            // A API retorna um objeto paginado: { data: [], total, page, limit }
+            // Precisamos passar um limit alto para obter todos os registros
+            const [usersResponse, squadsResponse, tasksResponse] = await Promise.all([
+                api.users.list({ limit: 1000 }),
+                api.squads.list({ limit: 1000 }),
+                api.tasks.list({ limit: 1000 })
             ]);
+
+            // Extrair o array 'data' de cada resposta
+            const users = usersResponse.data || [];
+            const squads = squadsResponse.data || [];
+            const tasks = tasksResponse.data || [];
 
             const statusCounts = tasks.reduce((acc, curr) => {
                 acc[curr.status || 'todo'] = (acc[curr.status || 'todo'] || 0) + 1;
@@ -46,11 +55,34 @@ export default function Dashboard() {
                     { name: 'Alta', value: priorityCounts['high'] || 0, color: '#ef4444' }
                 ]
             });
+        } catch (error) {
+            console.error('Erro ao carregar estatísticas:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        // Carregar dados inicialmente
+        loadStats();
+
+        // Atualizar quando a página se torna visível (usuário retorna à aba)
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                loadStats();
+            }
         };
 
-        loadStats();
-        // Set up an interval to refresh stats periodically if needed, or just on mount.
-        // For standard React app, mount is enough unless we have realtime requirements.
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        // Atualizar a cada 30 segundos para manter dados frescos
+        const interval = setInterval(loadStats, 30000);
+
+        // Cleanup
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            clearInterval(interval);
+        };
     }, []);
 
     const StatCard = ({ title, count, icon: Icon, color, link, linkText }) => (

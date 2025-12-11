@@ -1,5 +1,15 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+
+// Try to load electron module with error handling
+let electron;
+try {
+  electron = require('electron');
+} catch (error) {
+  console.error('Failed to load electron module:', error);
+  process.exit(1);
+}
+
+const { app, BrowserWindow, ipcMain } = electron;
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -24,13 +34,22 @@ function createWindow() {
   }
 }
 
-app.whenReady().then(createWindow);
+if (app) {
+  app.whenReady().then(createWindow);
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
-});
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit();
+  });
 
-// Handle quit request from renderer
-ipcMain.on('quit-app', () => {
-  app.quit();
-});
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
+
+  // Handle quit request from renderer
+  ipcMain.on('quit-app', () => {
+    app.quit();
+  });
+} else {
+  console.error('Electron app is not available');
+  process.exit(1);
+}
