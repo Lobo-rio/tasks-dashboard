@@ -19,6 +19,15 @@ export default function Layout() {
                     <Link to="/tasks" className="p-2 px-3 rounded-lg hover:bg-slate-100 font-medium text-slate-700 transition flex items-center gap-2">
                         Tarefas
                     </Link>
+                    <div className="my-2 border-t border-slate-100 dark:border-slate-700"></div>
+                    <Link to="/ai-search" className="p-2 px-3 rounded-lg hover:bg-slate-100 font-medium text-slate-700 transition flex items-center gap-2">
+                        <span className="flex items-center justify-center w-5 h-5">✨</span>
+                        Busca IA
+                    </Link>
+                    <Link to="/video-analysis" className="p-2 px-3 rounded-lg hover:bg-slate-100 font-medium text-slate-700 transition flex items-center gap-2">
+                        <span className="flex items-center justify-center w-5 h-5">🎥</span>
+                        Vídeo IA
+                    </Link>
                 </nav>
 
                 {/* Settings and Exit at bottom */}

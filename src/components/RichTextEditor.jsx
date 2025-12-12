@@ -1,94 +1,48 @@
-import { useState } from "react";
-import { Bold, Italic, Underline, List, ListOrdered } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-export default function RichTextEditor({
-  value,
-  onChange,
-  placeholder,
-  disabled,
-  style,
-}) {
-  const [isFocused, setIsFocused] = useState(false);
+export default function RichTextEditor({ value, onChange, placeholder, disabled }) {
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
-  const applyFormat = (command, value = null) => {
-    document.execCommand(command, false, value);
-  };
+  // Initialize editor state from prop value (HTML string)
+  useEffect(() => {
+    if (value) {
+      const contentBlock = htmlToDraft(value);
+      if (contentBlock) {
+        const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+        setEditorState(EditorState.createWithContent(contentState));
+      }
+    }
+  }, []); // Run once on mount. Warning: this doesn't sync if value changes externally after mount, but standard for controlled editors to avoid cursor jumps.
 
-  const handleInput = (e) => {
-    onChange(e.currentTarget.innerHTML);
+  const onEditorStateChange = (newState) => {
+    setEditorState(newState);
+    if (onChange) {
+      const html = draftToHtml(convertToRaw(newState.getCurrentContent()));
+      onChange(html);
+    }
   };
 
   return (
-    <div
-      className="w-full border border-slate-300 rounded-md overflow-hidden shadow-sm"
-      style={style}
-    >
-      {/* Toolbar */}
-      {!disabled && (
-        <div className="flex flex-wrap gap-1 p-2 bg-slate-50 border-b border-slate-300">
-          <button
-            type="button"
-            onClick={() => applyFormat("bold")}
-            className="p-2 hover:bg-slate-200 rounded transition text-slate-700"
-            title="Negrito (Ctrl+B)"
-          >
-            <Bold size={18} />
-          </button>
-          <button
-            type="button"
-            onClick={() => applyFormat("italic")}
-            className="p-2 hover:bg-slate-200 rounded transition text-slate-700"
-            title="Itálico (Ctrl+I)"
-          >
-            <Italic size={18} />
-          </button>
-          <button
-            type="button"
-            onClick={() => applyFormat("underline")}
-            className="p-2 hover:bg-slate-200 rounded transition text-slate-700"
-            title="Sublinhado (Ctrl+U)"
-          >
-            <Underline size={18} />
-          </button>
-          <div className="w-px bg-slate-300 mx-1"></div>
-          <button
-            type="button"
-            onClick={() => applyFormat("insertUnorderedList")}
-            className="p-2 hover:bg-slate-200 rounded transition text-slate-700"
-            title="Lista"
-          >
-            <List size={18} />
-          </button>
-          <button
-            type="button"
-            onClick={() => applyFormat("insertOrderedList")}
-            className="p-2 hover:bg-slate-200 rounded transition text-slate-700"
-            title="Lista Numerada"
-          >
-            <ListOrdered size={18} />
-          </button>
-          <div className="w-px bg-slate-300 mx-1"></div>
-          <button
-            type="button"
-            onClick={() => applyFormat("removeFormat")}
-            className="px-3 py-2 hover:bg-slate-200 rounded transition text-slate-700 text-sm font-medium"
-            title="Limpar formatação"
-          >
-            Limpar
-          </button>
-        </div>
-      )}
-      {/* Editor */}
-      <div
-        contentEditable={!disabled}
-        onInput={handleInput}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        className={`p-3 min-h-32 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-inset overflow-y-auto text-slate-800 bg-white ${
-          disabled ? "opacity-50 cursor-not-allowed" : "cursor-text"
-        }`}
-        dangerouslySetInnerHTML={{ __html: value }}
-        suppressContentEditableWarning
+    <div className={`border border-slate-300 rounded-md overflow-hidden bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+      <Editor
+        editorState={editorState}
+        wrapperClassName="demo-wrapper"
+        editorClassName="demo-editor min-h-[200px] px-4"
+        onEditorStateChange={onEditorStateChange}
+        placeholder={placeholder}
+        toolbar={{
+          options: ['inline', 'blockType', 'fontSize', 'list', 'textAlign', 'history'],
+          inline: { inDropdown: false, options: ['bold', 'italic', 'underline', 'strikethrough'] },
+          list: { inDropdown: false },
+          textAlign: { inDropdown: false },
+          link: { inDropdown: false },
+          history: { inDropdown: false },
+        }}
       />
     </div>
   );

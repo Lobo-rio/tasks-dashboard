@@ -13,6 +13,8 @@ import TasksPage from './routes/TasksPage';
 
 import { Toaster } from 'react-hot-toast';
 
+import AiSearchPage from './routes/AiSearchPage';
+import VideoAnalysisPage from './routes/VideoAnalysisPage';
 import SettingsPage from './routes/SettingsPage';
 
 export default function App() {
@@ -25,6 +27,8 @@ export default function App() {
           <Route path="users" element={<UsersPage />} />
           <Route path="squads" element={<SquadsPage />} />
           <Route path="tasks" element={<TasksPage />} />
+          <Route path="ai-search" element={<AiSearchPage />} />
+          <Route path="video-analysis" element={<VideoAnalysisPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Routes>

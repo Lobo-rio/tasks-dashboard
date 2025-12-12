@@ -98,4 +98,20 @@ export const api = {
         method: "DELETE",
       }),
   },
+
+  ai: {
+    search: (query) => apiCall(`/tasks/ai/search?query=${encodeURIComponent(query)}`),
+    analyzeVideo: async (formData) => {
+      const response = await fetch(`${API_BASE_URL}/tasks/ai/analyze-video`, {
+        method: 'POST',
+        body: formData,
+        // Header Content-Type must not be set manually for FormData, fetch does it
+      });
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ message: "Request failed" }));
+        throw new Error(error.message || `HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    }
+  }
 };
